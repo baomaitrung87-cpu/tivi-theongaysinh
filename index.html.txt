@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tử vi cá nhân chính xác - B360</title>
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: radial-gradient(circle, #f6e58d, #f9ca24);
+  margin: 0;
+  padding: 0;
+  color: #333;
+  text-align: center;
+}
+header {
+  padding: 20px;
+}
+.logo {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 15px;
+  background: conic-gradient(black 0deg 180deg, white 180deg 360deg);
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logo::after {
+  content: "B360";
+  position: absolute;
+  font-weight: bold;
+  color: #d4af37;
+  font-size: 28px;
+}
+form {
+  background: rgba(255, 255, 255, 0.8);
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+}
+input, select, button {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+button {
+  background: #d4af37;
+  color: white;
+  font-weight: bold;
+  border: none;
+}
+.result {
+  background: #fffbe6;
+  border-radius: 10px;
+  margin: 20px auto;
+  padding: 15px;
+  width: 90%;
+  max-width: 600px;
+  text-align: left;
+}
+.share-buttons {
+  margin-top: 30px;
+}
+.share-buttons button {
+  background: #3498db;
+  margin: 5px;
+  color: white;
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"></div>
+  <h1>TỬ VI CÁ NHÂN CHÍNH XÁC - B360</h1>
+</header>
+
+<form id="tuviForm">
+  <input type="text" id="name" placeholder="Họ và tên" required><br>
+  <select id="gender">
+    <option value="Nam">Nam</option>
+    <option value="Nữ">Nữ</option>
+  </select><br>
+  <label>Ngày sinh (Dương lịch):</label><br>
+  <input type="date" id="dob" required><br>
+  <label>Giờ sinh:</label><br>
+  <input type="time" id="time" required><br>
+  <button type="button" onclick="xemTuVi()">Xem tử vi</button>
+</form>
+
+<div id="result" class="result" style="display:none;"></div>
+
+<div class="share-buttons">
+  <button onclick="shareFB()">Chia sẻ Facebook</button>
+  <button onclick="shareZalo()">Chia sẻ Zalo</button>
+  <button onclick="taiPDF()">Tải PDF</button>
+</div>
+
+<script>
+//=== Chuyển năm dương sang mệnh đơn giản (có thể mở rộng) ===
+const menhList = [
+  "Hải Trung Kim","Lư Trung Hỏa","Đại Lâm Mộc","Lộ Bàng Thổ","Kiếm Phong Kim",
+  "Sơn Đầu Hỏa","Giản Hạ Thủy","Thành Đầu Thổ","Bạch Lạp Kim","Dương Liễu Mộc",
+  "Tuyền Trung Thủy","Ốc Thượng Thổ","Tích Lịch Hỏa","Tùng Bách Mộc","Tang Đố Mộc",
+  "Đại Trạch Thổ","Sa Trung Kim","Thiên Thượng Hỏa","Thạch Lựu Mộc","Đại Hải Thủy",
+  "Ốc Thượng Thổ","Phúc Đăng Hỏa","Thiên Hà Thủy","Thạch Lựu Mộc","Bình Địa Mộc",
+  "Bích Thượng Thổ","Kim Bạch Kim","Phúc Đăng Hỏa","Thiên Hà Thủy","Đại Lâm Mộc",
+  "Thoa Xuyến Kim","Tang Thạch Thổ","Thiên Thượng Hỏa","Sa Trung Kim","Trường Lưu Thủy",
+  "Tuyền Trung Thủy","Thạch Lựu Mộc","Thoa Xuyến Kim","Đại Dịch Thổ","Thiên Hà Thủy",
+  "Thạch Lựu Mộc","Bình Địa Mộc","Đại Hải Thủy","Bạch Lạp Kim","Dương Liễu Mộc",
+  "Đại Trạch Thổ","Tích Lịch Hỏa","Sơn Đầu Hỏa","Giản Hạ Thủy","Lư Trung Hỏa",
+  "Kiếm Phong Kim","Lộ Bàng Thổ","Hải Trung Kim","Đại Lâm Mộc","Phúc Đăng Hỏa",
+  "Đại Hải Thủy","Thoa Xuyến Kim","Sa Trung Kim","Bích Thượng Thổ","Trường Lưu Thủy"
+];
+
+function tinhMenh(nam) {
+  const can = (nam - 4) % 10;
+  const chi = (nam - 4) % 12;
+  const index = (can * 12 + chi) % 60;
+  return menhList[index];
+}
+
+function xemTuVi() {
+  const name = document.getElementById("name").value;
+  const gender = document.getElementById("gender").value;
+  const dob = new Date(document.getElementById("dob").value);
+  const year = dob.getFullYear();
+  const menh = tinhMenh(year);
+  
+  const result = document.getElementById("result");
+  result.style.display = "block";
+  result.innerHTML = `
+    <h2>Kết quả tử vi cho ${name}</h2>
+    <p><b>Giới tính:</b> ${gender}</p>
+    <p><b>Năm sinh dương lịch:</b> ${year}</p>
+    <p><b>Mệnh:</b> ${menh}</p>
+    <hr>
+    <h3>Luận giải chi tiết:</h3>
+    <p><b>Tính cách:</b> Người mệnh ${menh} thường có bản lĩnh mạnh mẽ, tư duy thực tế, biết hướng tới thành công và giữ cân bằng trong cuộc sống.</p>
+    <p><b>Tài lộc:</b> Dễ đạt của cải khi biết tận dụng cơ hội, nên làm việc trong lĩnh vực phù hợp hành bản mệnh.</p>
+    <p><b>Sự nghiệp:</b> Gặp nhiều quý nhân trợ giúp, nên chọn nghề liên quan hành ${menh.includes("Thủy") ? "Thủy" : menh.includes("Hỏa") ? "Hỏa" : "Thổ"}.</p>
+    <p><b>Tình duyên:</b> Đường tình cảm có lúc sóng gió nhưng chân thành, trung hậu.</p>
+    <p><b>Sức khỏe:</b> Chú ý cân bằng năng lượng và chế độ sinh hoạt điều độ.</p>
+    <p><b>Hướng nhà hợp:</b> ${gender === "Nam" ? "Đông Nam, Chính Nam" : "Tây, Tây Bắc"}.</p>
+    <p><b>Màu hợp:</b> ${menh.includes("Hỏa") ? "Đỏ, Tím, Cam" : menh.includes("Thủy") ? "Xanh dương, Đen" : menh.includes("Mộc") ? "Xanh lá, Nâu" : menh.includes("Kim") ? "Trắng, Vàng" : "Nâu, Vàng đất"}.</p>
+  `;
+}
+
+function shareFB(){ alert("Tính năng chia sẻ Facebook đang cập nhật."); }
+function shareZalo(){ alert("Tính năng chia sẻ Zalo đang cập nhật."); }
+function taiPDF(){ alert("Tải PDF sẽ được thêm sau."); }
+</script>
+</body>
+</html>
